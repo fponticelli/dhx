@@ -5,7 +5,7 @@
 
 package dhx;
 
-class TestBaseDom 
+class TestBaseDom
 {
 	var sel : Selection;
 
@@ -13,11 +13,11 @@ class TestBaseDom
 	{
 		sel = Dom.doc.select("body").append("div");
 	}
-	
+
 	public function teardown()
 	{
 		sel.remove();
 	}
-	
+
 	public function new() { }
 }

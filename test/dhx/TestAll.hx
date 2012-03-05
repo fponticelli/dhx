@@ -20,7 +20,7 @@ class TestAll
 		runner.addCase(new TestSizzle());
 		runner.addCase(new TestSelection());
 	}
-	
+
 	public static function main()
 	{
 		var runner = new Runner();
@@ -28,6 +28,6 @@ class TestAll
 		Report.create(runner);
 		runner.run();
 	}
-	
+
 	public function new(){}
 }

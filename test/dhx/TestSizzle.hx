@@ -20,12 +20,12 @@ class TestSizzle
 		node.id = "testsizzle";
 		Lib.document.body.appendChild(node);
 	}
-	
+
 	public function teardown()
 	{
 		Lib.document.body.removeChild(node);
 	}
-	
+
 	public function testSizzle()
 	{
 		var selection = Sizzle.select("#testsizzle");

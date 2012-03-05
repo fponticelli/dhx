@@ -5,17 +5,13 @@
 
 package dhx;
 
-import thx.color.NamedColors;
-import thx.color.Rgb;
 import dhx.Dom;
 import js.Lib;
 import js.Dom;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
-
 import dhx.Selection;
-using Arrays;
 
 
 class TestDom

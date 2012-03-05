@@ -1,11 +1,9 @@
-package dhx.behavior;
-import thx.math.scale.Linear;
-
 /**
  * Based on D3.js by Michael Bostock
  * @author Franco Ponticelli
  */
-using Arrays;
+
+package dhx.behavior;
 
 class ZoomEvent
 {

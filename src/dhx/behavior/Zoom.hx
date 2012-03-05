@@ -1,17 +1,15 @@
-package dhx.behavior;
-
 /**
  * Based on D3.js by Michael Bostock
  * @author Franco Ponticelli
  */
 
-import js.Lib;
-import dhx.Selection;
+package dhx.behavior;
+
 import dhx.Dom;
-import js.Dom;
+import dhx.Selection;
 import dhx.Svg;
-import thx.math.scale.Linear;
-using Arrays;
+import js.Dom;
+import js.Lib;
 
 class Zoom<TData>
 {
@@ -30,7 +28,7 @@ class Zoom<TData>
 				.style("height").string("2000px")
 				.node().parentNode;
 	}
-	
+
 	var webkit533 : Int;
 	static var last = 0.0;
 	var _pan : {
@@ -63,7 +61,7 @@ class Zoom<TData>
 		untyped dhx.Dom.event.preventDefault();
 		Lib.window.focus();
 	}
-	
+
 	function mousemove(?_,?_)
 	{
 		_zoom = null;
@@ -74,7 +72,7 @@ class Zoom<TData>
 			dispatch(_pan.data, _pan.index);
 		}
 	}
-	
+
 	function mouseup(_, _)
 	{
 		if (null != _pan)
@@ -83,7 +81,7 @@ class Zoom<TData>
 			_pan = null;
 		}
 	}
-	
+
 	function mousewheel(d : HtmlDom, i : Int)
 	{
 		var e = dhx.Dom.event;
@@ -98,7 +96,7 @@ class Zoom<TData>
 				y1 : _y - p[1]
 			};
 		}
-		
+
 		if ("dblclick" == e.type)
 		{
 			_z = e.shiftKey ? Math.ceil(_z - 1) : Math.floor(_z + 1);
@@ -116,16 +114,15 @@ class Zoom<TData>
 			}
 			_z += delta;
 		}
-		
+
 		var k = Math.pow(2, _z - _zoom.z0) - 1;
 		_x = _zoom.x0 + _zoom.x1 * k;
 		_y = _zoom.y0 + _zoom.y1 * k;
-		
+
 		dispatch(d, i);
 		untyped e.preventDefault();
 	}
-	
-	var oldscale : Linear;
+
 	function dispatch(d, i)
 	{
 		if (null != _dispatcher)
@@ -142,7 +139,7 @@ class Zoom<TData>
 			}
 		}
 	}
-	
+
 	function attach(dom : HtmlDom, ?i : Int)
 	{
 		var container = Dom.selectNode(dom);
@@ -151,17 +148,17 @@ class Zoom<TData>
 			.onNode("mousewheel", mousewheel)
 			.onNode("DOMMouseScroll", mousewheel)
 			.onNode("dblclick", mousewheel);
-		
+
 		Dom.selectNode(cast Lib.window)
 			.onNode("mousemove", mousemove)
 			.onNode("mouseup", mouseup);
 	}
-	
+
 	public function zoom(f : HtmlDom -> Int -> Void)
 	{
 		_dispatcher = f;
 		return attach;
 	}
-	
+
 	public static var event : ZoomEvent;
 }
