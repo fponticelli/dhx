@@ -25,7 +25,7 @@ class Namespace
 		else {
 			var space = prefix.get(name.substr(0, i));
 			if (null == space)
-				throw Std.format("unable to find a namespace for $space");
+				throw "unable to find a namespace for " + space;
 			return new NSQualifier(space, name.substr(i+1));
 		}
 	}
