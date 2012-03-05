@@ -1,0 +1,9 @@
+-js _
+-cp src
+-xml doc/doc.js.xml
+--macro include('*', true)
+# --no-output
+
+# HAXEDOC.XML
+-cmd rm _
+-cmd mv doc/doc.js.xml haxedoc.xml

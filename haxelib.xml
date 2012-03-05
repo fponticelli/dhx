@@ -1,0 +1,7 @@
+<project name="dhx" url="http://github.com/fponticelli/dhx" license="BSD">
+    <user name="fponticelli"/>
+    <tag v="js"/>
+	<tag v="std"/>
+    <description>DOM manipulation in D3 style.</description>
+    <version name="1.0.0">first release</version>
+</project>
