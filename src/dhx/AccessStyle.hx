@@ -56,7 +56,7 @@ class AccessStyle<That> extends Access<That>
 		{
 			setStyleProperty = function(node, key, value, priority)
 			{
-				untyped node.style.setProperty(key, value, priority == null ? '' : priority);
+				untyped node.style.setProperty(key,""+value, priority == null ? '' : priority);
 			}
 		} else {
 			setStyleProperty = function(node, key, value, priority)

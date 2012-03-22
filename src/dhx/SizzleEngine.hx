@@ -12,14 +12,19 @@ class SizzleEngine implements ISelectorEngine
 
 	public function new(){}
 
+	public static function supported()
+	{
+		return false != getSizzle();
+	}
+
 	public function select(selector : String, node : HtmlDom) : Null<HtmlDom>
 	{
 		return Sizzle.select(selector, node)[0];
 	}
 
-	public function selectNode(n : HtmlDom, p : HtmlDom) : Null<HtmlDom>
+	public static function getSizzle() : Dynamic
 	{
-		return Sizzle.select(cast n, p)[0];
+		return untyped __js__("(('undefined' != typeof Sizzle && Sizzle) || (('undefined' != typeof jQuery) && jQuery.find) || (('undefined' != typeof $) && $.find))");
 	}
 
 	public function selectAll(selector : String, node : HtmlDom) : Array<HtmlDom>

@@ -19,7 +19,16 @@ class Dom
 		return gs;
 	} )();
 
-	public static var selectionEngine = new SizzleEngine();
+	public static var selectionEngine : ISelectorEngine = {
+		var engine : ISelectorEngine;
+		if(NativeSelectorEngine.supported())
+			engine = new NativeSelectorEngine();
+		else if(SizzleEngine.supported())
+			engine = new SizzleEngine();
+		else
+			throw "no selector engine available";
+		engine;
+	}
 
 	public static function select(selector : String) : Selection
 	{
