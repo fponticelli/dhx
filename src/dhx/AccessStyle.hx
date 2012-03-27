@@ -71,6 +71,7 @@ class AccessStyle<That> extends Access<That>
 				}
 			}
 		}
+		setStyleProperty(node, key, value, priority);
 	}
 
 	dynamic public static function removeStyleProperty(node : HtmlDom, key : String) : Void
