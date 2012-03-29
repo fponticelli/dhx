@@ -1,4 +1,6 @@
 release.zip
+bin
+doc
 d3demo/bin/js/d3examples.js
 d3demo/bin/js/d3examples.js.map
 d3demo/bin/js/layout.js
