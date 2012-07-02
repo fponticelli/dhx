@@ -336,7 +336,7 @@ class EnterSelection<T> extends BoundSelection<T, EnterSelection<T>>
 		return new EnterSelection(groups, _choice);
 	}
 	public function exit() return _choice.exit()
-	public function update() return _choice
+	public function update() return _choice.update()
 }
 
 class ExitSelection<T> extends UnboundSelection<ExitSelection<T>>
@@ -354,7 +354,7 @@ class ExitSelection<T> extends UnboundSelection<ExitSelection<T>>
 	}
 
 	public function enter() return _choice.enter()
-	public function update() return _choice
+	public function update() return _choice.update()
 }
 
 class UpdateSelection<T> extends BoundSelection<T, UpdateSelection<T>>
