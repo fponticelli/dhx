@@ -191,21 +191,24 @@ class BoundSelection<T, This> extends BaseSelection<This>
 		return dataf(function(d : T, _) return cast d);
 	}
 
-	public function each<T>(f : T -> Int -> Void)
+	public function each(f : T -> Int -> Void)
 	{
 		return eachNode(function(n,i) f(Access.getData(n),i));
 	}
 
-	public function sort<T>(comparator : T -> T -> Int)
+	public function sort(comparator : T -> T -> Int)
 	{
 		return sortNode(function(a,b) return comparator(Access.getData(a), Access.getData(b)));
 	}
 
-	public function filter<T>(f : T -> Int -> Bool)
+	public function filter(f : T -> Int -> Bool)
 	{
 		return filterNode(function(n,i) return f(Access.getData(n),i));
 	}
 
+	// TODO: use class type parameter here instead of TIn.
+	// This will require overload covariance in upcoming Haxe compiler
+	// version
 	public function map<TIn, TOut>(f : TIn -> Int -> TOut)
 	{
 		var ngroups = [];
@@ -229,7 +232,7 @@ class BoundSelection<T, This> extends BaseSelection<This>
 		return firstNode(function(n) return f(Access.getData(n)));
 	}
 
-	public function on<T>(type : String, ?listener : T -> Int -> Void, capture = false)
+	public function on(type : String, ?listener : T -> Int -> Void, capture = false)
 	{
 		return onNode(type, null == listener ? null : function(n, i) {
 			listener(Access.getData(n),i);
@@ -807,3 +810,4 @@ class BaseSelection<This>
 		exit.push(exitGroup);
 	}
 }
+
