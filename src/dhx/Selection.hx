@@ -151,6 +151,7 @@ class BoundSelection<T, This> extends BaseSelection<This>
 	public function new(groups : Array<Group>)
 	{
 		super(groups);
+		groupSelections = new Hash();
 	}
 
 	// DATA BINDING
@@ -168,6 +169,11 @@ class BoundSelection<T, This> extends BaseSelection<This>
 		}
 
 		return new DataChoice(update, enter, exit);
+	}
+
+	public function groupBy(f:T->Int->String):BoundSelection<T,This>{
+
+		return cast groupNode(function(n,i) return f(Access.getData(n),i));
 	}
 
 	public function dataf<TOut>(fd : T -> Int -> Array<TOut>, ?join : TOut -> Int -> String) : DataChoice<TOut>
@@ -379,7 +385,7 @@ class UpdateSelection<T> extends BoundSelection<T, UpdateSelection<T>>
 class BaseSelection<This>
 {
 	public var parentNode : HtmlDom;
-
+        private var groupSelections:Hash<Array<js.Dom.HtmlDom>>;
 	var groups : Array<Group>;
 
 	function new(groups : Array<Group>)
@@ -401,6 +407,13 @@ class BaseSelection<This>
 			return Dom.selectionEngine.selectAll(selector, el);
 		});
 	}
+
+	public function selectGroup(group : String) : This
+        {
+                Lib.debug();
+                 if (groupSelections.exists(group)) return createSelection([new Group(groupSelections.get(group))]);
+                 else return createSelection([]);
+        }
 
 	inline function _this() : This return cast this
 
@@ -522,6 +535,34 @@ class BaseSelection<This>
 
 		}
 		return createSelection(subgroups);
+	}
+
+	public function groupNode(f : HtmlDom -> Int -> String):This
+	{
+		var subgroups = [],
+			subgroup;
+		groupSelections = new Hash();
+		for (group in groups)
+		{
+			var sg = new Group(subgroup = []);
+			sg.parentNode = group.parentNode;
+			subgroups.push(sg);
+			var i = -1;
+			for (node in group)
+			{
+				if (null != node)
+				{
+                                    var group_name = f(node, ++i);
+				    if (groupSelections.exists(group_name)){
+				        groupSelections.get(group_name).push(node);
+				    }else{
+				        groupSelections.set(group_name, [node]);
+				    }
+				}
+			}
+
+		}
+		return  cast this;
 	}
 
 	public function mapNode<T>(f : HtmlDom -> Int -> T)
