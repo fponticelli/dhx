@@ -6,8 +6,9 @@
 package dhx;
 
 import dhx.Dom;
-import js.Dom;
 import js.Lib;
+import js.Dom.HtmlDom;
+import js.Dom.Event;
 import dhx.Namespace;
 import dhx.AccessAttribute;
 import dhx.AccessClassed;
