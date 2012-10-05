@@ -99,7 +99,7 @@ class DataChoice<T> extends UpdateSelection<T>
 		_update = update;
 		_enter = enter;
 		_exit = exit;
-		super(_update,this);
+		super(_update, this);
 	}
 
 	override public function enter()
@@ -112,14 +112,15 @@ class DataChoice<T> extends UpdateSelection<T>
 		return new ExitSelection(_exit, this);
 	}
 
-/*	public function update()
+	override public function update()
 	{
 		return new UpdateSelection(_update, this);
 	}
-*/
 
-	public static function merge<T>(groups:Array<Group>,dc:DataChoice<T>){
-		Group.merge(groups, dc._update);
+
+	public function mergeUpdate<T>(groups:Array<Group>){
+	        Group.merge(groups, this.groups);
+		Group.merge(this._enter, this._update);
 	}
 
 }
@@ -317,7 +318,6 @@ class PreEnterSelection<T>
 				}
 			}
 		}
-		DataChoice.merge(subgroups, _choice);
 		return createSelection(subgroups);
 	}
 }
@@ -336,7 +336,10 @@ class EnterSelection<T> extends BoundSelection<T, EnterSelection<T>>
 		return new EnterSelection(groups, _choice);
 	}
 	public function exit() return _choice.exit()
-	public function update() return _choice.update()
+	public function update(){
+            _choice.mergeUpdate(groups);
+            return _choice.update();
+        }
 }
 
 class ExitSelection<T> extends UnboundSelection<ExitSelection<T>>
