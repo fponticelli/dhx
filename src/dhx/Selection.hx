@@ -66,7 +66,7 @@ class UnboundSelection<This> extends BaseSelection<This>
 	}
 
 	// DATA BINDING
-	public function data<T>(d : Array<T>, ?join : T -> Int -> String) : DataChoice<T>
+	public function data<T>(d : Array<T>, ?join : T -> Int -> String) : BoundSelection<T>
 	{
 		var update = [], enter = [], exit = [];
 
@@ -79,63 +79,48 @@ class UnboundSelection<This> extends BaseSelection<This>
 				BaseSelection.bindJoin(join, group, d, update, enter, exit);
 		}
 
-		return new DataChoice(update, enter, exit);
+		return new BoundSelection(groups, {update:update, enter:enter, exit:exit});
 	}
 
 	public function selectAllData<T>(selector : String)
 	{
+
 		var selection : { private var groups : Array<Group>; } = cast selectAll(selector);
-		return new ResumeSelection<T>(selection.groups);
+		return new ResumeSelection<T>(selection.groups, {update:[], enter:[], exit:[]});
 	}
 }
 
-class DataChoice<T> extends UpdateSelection<T>
+
+class ResumeSelection<T> extends AbstractBoundSelection<T,ResumeSelection<T>>
 {
-	var _update : Array<Group>;
-	var _enter : Array<Group>;
-	var _exit : Array<Group>;
-	public function new(update : Array<Group>, enter : Array<Group>, exit : Array<Group>)
+	public static function create<T>(groups : Array<Group>) return new ResumeSelection<T>(groups, {update:[], enter:[], exit:[]})
+	override function createSelection(groups : Array<Group>):ResumeSelection<T>
 	{
-		_update = update;
-		_enter = enter;
-		_exit = exit;
-		super(_update, this);
+		return new ResumeSelection<T>(groups, this.selections);
 	}
+}
 
-	override public function enter()
+typedef GroupSelections ={
+	update:Array<Group>,
+	enter:Array<Group>,
+	exit:Array<Group>
+}
+
+class BoundSelection<T> extends AbstractBoundSelection<T,BoundSelection<T>>
+{
+	public function new(groups:Array<Group>, selections:GroupSelections){
+		super(groups, selections);
+	}
+	override function createSelection(groups : Array<Group>) : BoundSelection<T>
 	{
-		return new PreEnterSelection(_enter, this);
-	}
-
-	override public function exit()
-	{
-		return new ExitSelection(_exit, this);
-	}
-
-	override public function update()
-	{
-		return new UpdateSelection(_update, this);
-	}
-
-
-	public function mergeUpdate<T>(groups:Array<Group>){
-	        Group.merge(groups, this.groups);
-		Group.merge(this._enter, this._update);
+		return new BoundSelection(groups, this.selections );
 	}
 
 }
 
-class ResumeSelection<T> extends BoundSelection<T, ResumeSelection<T>>
+class AbstractBoundSelection<T,That> extends BaseSelection<That>
 {
-	public static function create<T>(groups : Array<Group>) return new ResumeSelection<T>(groups)
-	override function createSelection(groups : Array<Group>)
-	{
-		return new ResumeSelection<T>(groups);
-	}
-}
-
-class BoundSelection<T, This> extends BaseSelection<This>
-{
+	private var selections:GroupSelections;
 	public function html() return new AccessDataHtml(this)
 	public function text() return new AccessDataText(this)
 	public function attr(name : String) return new AccessDataAttribute(name, this)
@@ -143,19 +128,23 @@ class BoundSelection<T, This> extends BaseSelection<This>
 	public function property(name : String) return new AccessDataProperty(name, this)
 	public function style(name : String) return new AccessDataStyle(name, this)
 
+
 	// TRANSITION
 	public function transition()
 	{
-		return new BoundTransition<T>(this);
+		return new BoundTransition<T>(cast this);
 	}
 
-	public function new(groups : Array<Group>)
+	public function new(groups : Array<Group>, selections: GroupSelections)
 	{
+		this.selections = selections;
 		super(groups);
 	}
 
+
+
 	// DATA BINDING
-	public function data<T>(d : Array<T>, ?join : T -> Int -> String) : DataChoice<T>
+	public function data<T>(d : Array<T>, ?join : T -> Int -> String) : BoundSelection<T>
 	{
 		var update = [], enter = [], exit = [];
 
@@ -168,22 +157,23 @@ class BoundSelection<T, This> extends BaseSelection<This>
 				BaseSelection.bindJoin(join, group, d, update, enter, exit);
 		}
 
-		return new DataChoice(update, enter, exit);
+
+		return new BoundSelection(groups, {update:update, enter:enter, exit:exit});
 	}
 
-	public function dataf<TOut>(fd : T -> Int -> Array<TOut>, ?join : TOut -> Int -> String) : DataChoice<TOut>
+	public function dataf<TOut>(fd : T -> Int -> Array<TOut>, ?join : TOut -> Int -> String) : BoundSelection<TOut>
 	{
 		if (null == join)
 		{
 			var update = [], enter = [], exit = [], i = 0;
 			for (group in groups)
 				BaseSelection.bind(group, cast fd(Access.getData(group.parentNode), i++), update, enter, exit);
-			return new DataChoice(cast update, cast enter, cast exit);
+			return new BoundSelection(groups, {update:update, enter:enter, exit:exit});
 		} else {
 			var update = [], enter = [], exit = [], i = 0;
 			for (group in groups)
 				BaseSelection.bindJoin(join, cast group, fd(Access.getData(group.parentNode), i++), update, enter, exit);
-			return new DataChoice(update, enter, exit);
+			return new BoundSelection(groups, {update:update, enter:enter, exit:exit});
 		}
 	}
 
@@ -221,6 +211,7 @@ class BoundSelection<T, This> extends BaseSelection<This>
 			{
 				if (null != node)
 					Access.setData(node, f(Access.getData(node), i++));
+
 				ngroup.push(node);
 			}
 			ngroups.push(ngroup);
@@ -239,16 +230,33 @@ class BoundSelection<T, This> extends BaseSelection<This>
 			listener(Access.getData(n),i);
 		}, capture);
 	}
+
+	// Group Selections
+	public function enter():PreEnterSelection<T>
+	{
+		return new PreEnterSelection(selections.enter, selections);
+	}
+
+	public function exit():BoundSelection<T>
+	{
+		return new BoundSelection(selections.exit, selections);
+	}
+
+	public function update():BoundSelection<T>
+	{
+		return new BoundSelection(selections.update, selections);
+	}
+
 }
 
 class PreEnterSelection<T>
 {
 	var groups : Array<Group>;
-	var _choice : DataChoice<T>;
-	public function new(enter : Array<Group>, choice : DataChoice<T>)
+	var selections : GroupSelections;
+	public function new(enter : Array<Group>, selections:GroupSelections)
 	{
 		this.groups = enter;
-		this._choice = choice;
+		this.selections = selections;
 	}
 
 	public function append(name : String)
@@ -291,9 +299,9 @@ class PreEnterSelection<T>
 		return _select(null == qname ? insertDom : insertNsDom);
 	}
 
-	function createSelection(groups : Array<Group>)
+	function createSelection(groups : Array<Group>):BoundSelection<T>
 	{
-		return new EnterSelection(groups, _choice);
+		return new BoundSelection(groups, this.selections);
 	}
 
 	function _select(selectf : HtmlDom -> HtmlDom)
@@ -318,66 +326,11 @@ class PreEnterSelection<T>
 				}
 			}
 		}
+		Group.merge(subgroups, this.selections.update); // merge changes to the update selection
 		return createSelection(subgroups);
 	}
 }
 
-class EnterSelection<T> extends BoundSelection<T, EnterSelection<T>>
-{
-	var _choice : DataChoice<T>;
-	public function new(enter : Array<Group>, choice : DataChoice<T>)
-	{
-		super(enter);
-		this._choice = choice;
-	}
-
-	override function createSelection(groups : Array<Group>)
-	{
-		return new EnterSelection(groups, _choice);
-	}
-	public function exit() return _choice.exit()
-	public function update(){
-            _choice.mergeUpdate(groups);
-            return _choice.update();
-        }
-}
-
-class ExitSelection<T> extends UnboundSelection<ExitSelection<T>>
-{
-	var _choice : DataChoice<T>;
-	public function new(exit : Array<Group>, choice : DataChoice<T>)
-	{
-		super(exit);
-		this._choice = choice;
-	}
-
-	override function createSelection(groups : Array<Group>)
-	{
-		return new ExitSelection(groups, _choice);
-	}
-
-	public function enter() return _choice.enter()
-	public function update() return _choice.update()
-}
-
-class UpdateSelection<T> extends BoundSelection<T, UpdateSelection<T>>
-{
-	var _choice : DataChoice<T>;
-	public function new(update : Array<Group>, choice : DataChoice<T>)
-	{
-		super(update);
-		this._choice = choice;
-	}
-
-	override function createSelection(groups : Array<Group>)
-	{
-		return new UpdateSelection(groups, _choice);
-	}
-
-	public function update() return this
-	public function enter() return _choice.enter()
-	public function exit() return _choice.exit()
-}
 
 class BaseSelection<This>
 {

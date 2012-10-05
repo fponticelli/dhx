@@ -59,7 +59,7 @@ class AccessText<That> extends Access<That>
 
 class AccessDataText<T, That> extends AccessText<That>
 {
-	public function new(selection : BoundSelection<T, That>)
+	public function new(selection : AbstractBoundSelection<T,That>)
 	{
 		super(selection);
 	}

@@ -148,7 +148,7 @@ class AccessStyle<That> extends Access<That>
 
 class AccessDataStyle<T, That> extends AccessStyle<That>
 {
-	public function new(name : String, selection : BoundSelection<T, That>)
+	public function new(name : String, selection : AbstractBoundSelection<T,That>)
 	{
 		super(name, selection);
 	}
