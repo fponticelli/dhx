@@ -257,7 +257,7 @@ class UnboundTransition extends BaseTransition<UnboundTransition>
 
 class BoundTransition<T> extends BaseTransition<BoundTransition<T>>
 {
-	public function new(selection : BoundSelection<T, Dynamic>)
+	public function new(selection : AbstractBoundSelection<T,BoundTransition<T>>)
 	{
 		super(selection);
 	}

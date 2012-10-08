@@ -35,7 +35,7 @@ class AccessHtml<TData> extends Access<TData>
 
 class AccessDataHtml<T, That> extends AccessHtml<That>
 {
-	public function new(selection : BoundSelection<T, That>)
+	public function new(selection : AbstractBoundSelection<T,That>)
 	{
 		super(selection);
 	}

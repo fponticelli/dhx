@@ -135,7 +135,7 @@ class AccessClassed<That> extends Access<That>
 
 class AccessDataClassed<T, That> extends AccessClassed<That>
 {
-	public function new(selection : BoundSelection<T, That>)
+	public function new(selection : AbstractBoundSelection<T,That>)
 	{
 		super(selection);
 	}
