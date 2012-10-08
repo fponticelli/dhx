@@ -44,7 +44,7 @@ class AccessProperty<That> extends Access<That>
 
 class AccessDataProperty<T, That> extends AccessProperty<That>
 {
-	public function new(name : String, selection : BoundSelection<T, That>)
+	public function new(name : String, selection : AbstractBoundSelection<T,That>)
 	{
 		super(name, selection);
 	}

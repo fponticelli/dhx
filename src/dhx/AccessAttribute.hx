@@ -77,7 +77,7 @@ class AccessAttribute<That> extends Access<That>
 
 class AccessDataAttribute<T, That> extends AccessAttribute<That>
 {
-	public function new(name : String, selection : BoundSelection<T, That>)
+	public function new(name : String, selection : AbstractBoundSelection<T,That>)
 	{
 		super(name, selection);
 	}
