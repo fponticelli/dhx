@@ -40,12 +40,10 @@ class Group
 		for (i in 0...target.length){
 			var s = source[i];
 			var t = target[i];
-			if (s.parentNode != t.parentNode) throw ("parentNodes not the same!");
-			else if (s.nodes.length != t.nodes.length) throw("node length mismatch!")
-			else{
-				for (i in 0...t.nodes.length){
-					if (null == t.nodes[i]) t.nodes[i] = s.nodes[i];
-				}
+			//if (s.nodes.length != t.nodes.length) Lib.debug();
+			for (i in 0...t.nodes.length){
+				if (s.nodes[i] == null) continue;
+				t.nodes[i] = s.nodes[i]; // override
 			}
 		}
 		return target;
