@@ -119,6 +119,24 @@ class BoundSelection<T> extends AbstractBoundSelection<T,BoundSelection<T>>
 
 }
 
+class EnterSelection<T> extends AbstractBoundSelection<T,EnterSelection<T>>
+{
+	public function new(groups:Array<Group>, selections:GroupSelections){
+		super(groups, selections);
+	}
+
+	override function createSelection(groups : Array<Group>) : EnterSelection<T>
+	{
+		var sel = {
+			update:groups,
+			enter:this.selections.enter.copy(),
+			exit:this.selections.exit.copy()
+		}
+		return new EnterSelection(groups, sel);
+	}
+
+}
+
 class AbstractBoundSelection<T,That> extends BaseSelection<That>
 {
 	private var selections:GroupSelections;
@@ -300,9 +318,9 @@ class PreEnterSelection<T>
 		return _select(null == qname ? insertDom : insertNsDom);
 	}
 
-	function createSelection(groups : Array<Group>):BoundSelection<T>
+	function createSelection(groups : Array<Group>):EnterSelection<T>
 	{
-		return new BoundSelection(groups, this.selections);
+		return new EnterSelection(groups, this.selections);
 	}
 
 	function _select(selectf : HtmlDom -> HtmlDom)
