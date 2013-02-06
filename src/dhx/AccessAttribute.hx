@@ -5,7 +5,7 @@
 
 package dhx;
 
-import js.Dom;
+import js.html.Element;
 import dhx.Namespace;
 import dhx.Selection;
 
@@ -23,7 +23,7 @@ class AccessAttribute<That> extends Access<That>
 	{
 		var n = name,
 			q = qname;
-		return selection.firstNode(function(node : HtmlDom) return q == null ? node.getAttribute(n) : untyped node.getAttributeNS(q.space, q.local));
+		return selection.firstNode(function(node : Element) return q == null ? node.getAttribute(n) : untyped node.getAttributeNS(q.space, q.local));
 	}
 
 	static var refloat = ~/(\d+(?:\.\d+)?)/;
@@ -99,7 +99,7 @@ class AccessDataAttribute<T, That> extends AccessAttribute<That>
 			selection.eachNode(function(node, i) {
 				var s = v(Access.getData(node), i);
 				if (null == s)
-					untyped node.removeAttributeNS(n);
+					untyped node.removeAttributeNS(q.space, q.local);
 				else
 					untyped node.setAttributeNS(q.space, q.local, s);
 			});
@@ -123,7 +123,7 @@ class AccessDataAttribute<T, That> extends AccessAttribute<That>
 			selection.eachNode(function(node, i) {
 				var s = v(Access.getData(node), i);
 				if (null == s)
-					untyped node.removeAttributeNS(n);
+					untyped node.removeAttributeNS(q.space, q.local);
 				else
 					untyped node.setAttributeNS(q.space, q.local, "" + s);
 			});

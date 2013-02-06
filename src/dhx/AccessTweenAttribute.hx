@@ -5,7 +5,7 @@
 
 package dhx;
 import dhx.Namespace;
-import js.Dom;
+import js.html.Element;
 import dhx.Selection;
 import dhx.Transition;
 
@@ -13,14 +13,14 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 {
 	var name : String;
 	var qname : NSQualifier;
-	public function new(name : String, transition : BaseTransition<That>, tweens : Hash<HtmlDom -> Int -> (Float -> Void)>)
+	public function new(name : String, transition : BaseTransition<That>, tweens : Map<String, Element -> Int -> (Float -> Void)>)
 	{
 		super(transition, tweens);
 		this.name = name;
 		this.qname = Namespace.qualify(name);
 	}
 
-	public function stringNodef(f : HtmlDom -> Int -> String)
+	public function stringNodef(f : Element -> Int -> String)
 	{
 		return stringTweenNodef(transitionStringTweenf(f));
 	}
@@ -30,11 +30,11 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 		return stringTweenNodef(transitionStringTween(value));
 	}
 
-	public function stringTweenNodef(tween : HtmlDom -> Int -> String -> (Float -> String))
+	public function stringTweenNodef(tween : Element -> Int -> String -> (Float -> String))
 	{
 		var name = this.name;
 
-		function attrTween(d : HtmlDom, i : Int) : Float -> Void
+		function attrTween(d : Element, i : Int) : Float -> Void
 		{
 			var f = tween(d, i, d.getAttribute(name));
 			return function(t) {
@@ -42,7 +42,7 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 			};
 		}
 
-		function attrTweenNS(d : HtmlDom, i : Int) : Float -> Void
+		function attrTweenNS(d : Element, i : Int) : Float -> Void
 		{
 			var f = tween(d, i, untyped d.getAttributeNS(name.space, name.local));
 			return function(t) {
@@ -54,7 +54,7 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 		return _that();
 	}
 
-	public function floatNodef(f : HtmlDom -> Int -> Float)
+	public function floatNodef(f : Element -> Int -> Float)
 	{
 		return floatTweenNodef(transitionFloatTweenf(f));
 	}
@@ -64,11 +64,11 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 		return floatTweenNodef(transitionFloatTween(value));
 	}
 
-	public function floatTweenNodef(tween : HtmlDom -> Int -> Float -> (Float -> Float))
+	public function floatTweenNodef(tween : Element -> Int -> Float -> (Float -> Float))
 	{
 		var name = this.name;
 
-		function attrTween(d : HtmlDom, i : Int) : Float -> Void
+		function attrTween(d : Element, i : Int) : Float -> Void
 		{
 			var f = tween(d, i, Std.parseFloat(d.getAttribute(name)));
 			return function(t) {
@@ -76,7 +76,7 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 			};
 		}
 
-		function attrTweenNS(d : HtmlDom, i : Int) : Float -> Void
+		function attrTweenNS(d : Element, i : Int) : Float -> Void
 		{
 			var f = tween(d, i, Std.parseFloat(untyped d.getAttributeNS(name.space, name.local)));
 			return function(t) {
@@ -91,7 +91,7 @@ class AccessTweenAttribute<That : BaseTransition<Dynamic>> extends AccessTween<T
 
 class AccessDataTweenAttribute<T, That : BaseTransition<Dynamic>> extends AccessTweenAttribute<That>
 {
-	public function new(name : String, transition : BoundTransition<T>, tweens : Hash<HtmlDom -> Int -> (Float -> Void)>)
+	public function new(name : String, transition : BoundTransition<T>, tweens : Map<String, Element -> Int -> (Float -> Void)>)
 	{
 		super(name, cast transition, tweens);
 	}
@@ -110,7 +110,7 @@ class AccessDataTweenAttribute<T, That : BaseTransition<Dynamic>> extends Access
 	{
 		var name = this.name;
 
-		function attrTween(n : HtmlDom, i : Int) : Float -> Void
+		function attrTween(n : Element, i : Int) : Float -> Void
 		{
 			var f = tween(Access.getData(n), i, n.getAttribute(name));
 			return function(t) {
@@ -118,7 +118,7 @@ class AccessDataTweenAttribute<T, That : BaseTransition<Dynamic>> extends Access
 			};
 		}
 
-		function attrTweenNS(n : HtmlDom, i : Int) : Float -> Void
+		function attrTweenNS(n : Element, i : Int) : Float -> Void
 		{
 			var f = tween(Access.getData(n), i, untyped n.getAttributeNS(name.space, name.local));
 			return function(t) {
@@ -134,7 +134,7 @@ class AccessDataTweenAttribute<T, That : BaseTransition<Dynamic>> extends Access
 	{
 		var name = this.name;
 
-		function attrTween(n : HtmlDom, i : Int) : Float -> Void
+		function attrTween(n : Element, i : Int) : Float -> Void
 		{
 			var f = tween(Access.getData(n), i, Std.parseFloat(n.getAttribute(name)));
 			return function(t) {
@@ -142,7 +142,7 @@ class AccessDataTweenAttribute<T, That : BaseTransition<Dynamic>> extends Access
 			};
 		}
 
-		function attrTweenNS(n : HtmlDom, i : Int) : Float -> Void
+		function attrTweenNS(n : Element, i : Int) : Float -> Void
 		{
 			var f = tween(Access.getData(n), i, Std.parseFloat(untyped n.getAttributeNS(name.space, name.local)));
 			return function(t) {

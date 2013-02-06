@@ -9,7 +9,7 @@ import dhx.Dom;
 import dhx.Selection;
 import dhx.Svg;
 import js.Dom;
-import js.Lib;
+import js.Browser;
 
 class Zoom<TData>
 {

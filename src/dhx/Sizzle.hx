@@ -1,15 +1,15 @@
 package dhx;
 
-import js.Dom;
+import js.html.Element;
 
 extern class Sizzle
 {
-	public static function select(selector : String, ?doc : HtmlDom, ?result : Array<HtmlDom>) : Array<HtmlDom>;
-	public static function uniqueSort(list : Array<HtmlDom>) : Array<HtmlDom>;
+	public static function select(selector : String, ?doc : Element, ?result : Array<Element>) : Array<Element>;
+	public static function uniqueSort(list : Array<Element>) : Array<Element>;
 
 	private static function __init__() : Void untyped {
-		#if !noEmbedJS
-		haxe.macro.Tools.includeFile("dhx/sizzle.js");
+		#if embed_js
+		haxe.macro.Compiler.includeFile("dhx/sizzle.js");
 		#end
 		var s : Dynamic = SizzleEngine.getSizzle();
 		dhx.Sizzle = s;

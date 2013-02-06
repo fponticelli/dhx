@@ -1,5 +1,5 @@
 import thx.geom.layout.Tree;
-import js.Lib;
+import js.Browser;
 import dhx.Dom;
 import js.Dom.Event;
 import thx.geom.layout.Hierarchy;

@@ -8,7 +8,7 @@ package dhx;
 class Namespace
 {
 	public static var prefix = (function() {
-		var h = new Hash();
+		var h = new Map ();
 		h.set("svg",	"http://www.w3.org/2000/svg");
 		h.set("xhtml",	"http://www.w3.org/1999/xhtml");
 		h.set("xlink",	"http://www.w3.org/1999/xlink");

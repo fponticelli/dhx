@@ -5,19 +5,20 @@
 
 package dhx;
 
-import js.Dom;
-import js.Lib;
+import js.html.Element;
+import js.html.Event;
+import js.Browser;
 import dhx.Selection;
 
 class Dom
 {
 
 	public static var doc : Selection = (function() {
-		var g = new Group([cast Lib.document]),
+		var g = new Group([cast Browser.document]),
 			gs = Selection.create([g]);
-		g.parentNode = gs.parentNode = untyped Lib.document.documentElement;
+		g.parentNode = gs.parentNode = untyped Browser.document.documentElement;
 		return gs;
-	} )();
+	})();
 
 	public static var selectionEngine : ISelectorEngine = {
 		var engine : ISelectorEngine;
@@ -40,17 +41,17 @@ class Dom
 		return doc.selectAll(selector);
 	}
 
-	public static function selectNode(node : HtmlDom) : Selection
+	public static function selectNode(node : Element) : Selection
 	{
 		return Selection.create([new Group([node])]);
 	}
 
-	public static function selectNodes(nodes : Array<HtmlDom>) : Selection
+	public static function selectNodes(nodes : Array<Element>) : Selection
 	{
 		return Selection.create([new Group(nodes)]);
 	}
 
-	public static function selectNodeData<T>(node : HtmlDom) : ResumeSelection<T>
+	public static function selectNodeData<T>(node : Element) : ResumeSelection<T>
 	{
 		return ResumeSelection.create([new Group([node])]);
 	}

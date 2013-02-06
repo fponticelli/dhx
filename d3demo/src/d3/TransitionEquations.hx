@@ -6,7 +6,7 @@ package d3;
  */
 
 import haxe.Timer;
-import js.Lib;
+import js.Browser;
 import thx.color.Colors;
 import dhx.Dom;
 import thx.math.EaseMode;

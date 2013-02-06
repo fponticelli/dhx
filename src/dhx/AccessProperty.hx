@@ -5,7 +5,7 @@
 package dhx;
 
 import dhx.Selection;
-import js.Dom;
+import js.html.Element;
 
 class AccessProperty<That> extends Access<That>
 {
@@ -18,7 +18,7 @@ class AccessProperty<That> extends Access<That>
 	public function get()
 	{
 		var n = name;
-		return selection.firstNode(function(node : HtmlDom) return Reflect.field(node, n));
+		return selection.firstNode(function(node : Element) return Reflect.field(node, n));
 	}
 
 	public function remove()

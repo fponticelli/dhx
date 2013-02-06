@@ -5,7 +5,9 @@
 
 package dhx;
 import dhx.ISelectorEngine;
-import js.Dom;
+import js.html.Element;
+import js.html.Document;
+import js.html.NodeList;
 
 class NativeSelectorEngine implements ISelectorEngine
 {
@@ -16,19 +18,27 @@ class NativeSelectorEngine implements ISelectorEngine
 
 	public function new(){}
 
-	public function select(selector : String, node : HtmlDom) : Null<HtmlDom>
+	public function select(selector : String, ?node : Element, ?doc : Document) : Null<Element>
 	{
-		if(null == node) node = js.Lib.document;
-		return untyped node.querySelector(selector);
+		if(null != node) return node.querySelector(selector);
+		if(null == doc)
+			doc = js.Browser.document;
+		return doc.querySelector(selector);
 	}
 
-	public function selectAll(selector : String, node : HtmlDom) : Array<HtmlDom>
+	public function selectAll(selector : String, ?node : Element, ?doc : Document) : Array<Element>
 	{
-		if(null == node) node = js.Lib.document;
-		var s : ArrayAccess<HtmlDom> = untyped node.querySelectorAll(selector);
-		var r = [];
+		var s : NodeList;
+		if(null != node)
+			s = node.querySelectorAll(selector);
+		else {
+			if(null == doc)
+				doc = js.Browser.document;
+			s = doc.querySelectorAll(selector);
+		}
+		var r : Array<Element> = [];
 		for(i in 0...untyped s.length)
-			r.push(s[i]);
+			r.push(cast s[i]);
 		return r;
 	}
 }

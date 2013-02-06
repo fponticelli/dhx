@@ -4,19 +4,19 @@
  */
 
 package dhx;
-import js.Dom;
+import js.html.Element;
 import dhx.Namespace;
 import dhx.Selection;
 import dhx.Transition;
 
 class AccessTweenText<That : BaseTransition<Dynamic>> extends AccessTween<That>
 {
-	public function new(transition : BaseTransition<That>, tweens : Hash<HtmlDom -> Int -> (Float -> Void)>)
+	public function new(transition : BaseTransition<That>, tweens : Map<String, Element -> Int -> (Float -> Void)>)
 	{
 		super(transition, tweens);
 	}
 
-	public function stringNodef(f : HtmlDom -> Int -> String)
+	public function stringNodef(f : Element -> Int -> String)
 	{
 		return stringTweenNodef(transitionStringTweenf(f));
 	}
@@ -26,9 +26,9 @@ class AccessTweenText<That : BaseTransition<Dynamic>> extends AccessTween<That>
 		return stringTweenNodef(transitionStringTween(value));
 	}
 
-	public function stringTweenNodef(tween : HtmlDom -> Int -> String -> (Float -> String))
+	public function stringTweenNodef(tween : Element -> Int -> String -> (Float -> String))
 	{
-		function handler(d : HtmlDom, i : Int) : Float -> Void
+		function handler(d : Element, i : Int) : Float -> Void
 		{
 			var f = tween(d, i, untyped d.textContent);
 			return function(t)
@@ -41,7 +41,7 @@ class AccessTweenText<That : BaseTransition<Dynamic>> extends AccessTween<That>
 		return _that();
 	}
 
-	public function charsNodef(f : HtmlDom -> Int -> String)
+	public function charsNodef(f : Element -> Int -> String)
 	{
 		return stringTweenNodef(transitionCharsTweenf(f));
 	}
@@ -54,7 +54,7 @@ class AccessTweenText<That : BaseTransition<Dynamic>> extends AccessTween<That>
 
 class AccessDataTweenText<T, That : BaseTransition<Dynamic>> extends AccessTweenText<That>
 {
-	public function new(transition : BoundTransition<T>, tweens : Hash<HtmlDom -> Int -> (Float -> Void)>)
+	public function new(transition : BoundTransition<T>, tweens : Map<String, Element -> Int -> (Float -> Void)>)
 	{
 		super(cast transition, tweens);
 	}
@@ -71,7 +71,7 @@ class AccessDataTweenText<T, That : BaseTransition<Dynamic>> extends AccessTween
 
 	public function stringTweenf(tween : T -> Int -> String -> (Float -> String))
 	{
-		function handler(n : HtmlDom, i : Int) : Float -> Void
+		function handler(n : Element, i : Int) : Float -> Void
 		{
 			var f = tween(Access.getData(n), i, untyped d.textContent);
 			return function(t)

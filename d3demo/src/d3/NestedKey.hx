@@ -1,5 +1,5 @@
 package d3;
-import js.Lib;
+import js.Browser;
 import thx.color.Hsl;
 
 /**

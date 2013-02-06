@@ -7,20 +7,20 @@
 
 package dhx;
 
-import js.Dom;
-import js.Lib;
+import js.html.Element;
+import js.Browser;
 import dhx.Namespace;
 
 class Group
 {
-	public static var current : HtmlDom;
-	public var parentNode : HtmlDom;
+	public static var current : Element;
+	public var parentNode : Element;
 
-	var nodes : Array<HtmlDom>;
+	var nodes : Array<Element>;
 
-	public function new(nodes : Array<HtmlDom>) this.nodes = nodes
+	public function new(nodes : Array<Element>) this.nodes = nodes
 
-	public function each(f : HtmlDom -> Int -> Void)
+	public function each(f : Element -> Int -> Void)
 	{
 		for (i in 0...nodes.length)
 			if (null != nodes[i])
@@ -33,7 +33,7 @@ class Group
 
 	inline public function count() return nodes.length
 
-	inline public function push(node : HtmlDom) nodes.push(node)
+	inline public function push(node : Element) nodes.push(node)
 
 	inline public static function merge(source:Array<Group>, target:Array<Group>){
 		if (target.length != source.length) throw ("Group length not equal");
@@ -51,5 +51,5 @@ class Group
 		return target;
 	}
 
-	inline public function sort(comparator : HtmlDom -> HtmlDom -> Int) nodes.sort(comparator)
+	inline public function sort(comparator : Element -> Element -> Int) nodes.sort(comparator)
 }

@@ -10,7 +10,7 @@ import dhx.util.Strings;
 #end
 
 import dhx.Selection;
-import js.Dom;
+import js.html.Element;
 
 class AccessClassed<That> extends Access<That>
 {
@@ -43,11 +43,15 @@ class AccessClassed<That> extends Access<That>
 
 	public function remove(name : String)
 	{
+#if haxe3
+		selection.eachNode(_remove.bind(name));
+#else
 		selection.eachNode(callback(_remove, name));
+#end
 		return _that();
 	}
 
-	function _remove(name : String, node : HtmlDom, i : Int) {
+	function _remove(name : String, node : Element, i : Int) {
 		var list = untyped node.classList;
 		if (null != list)
 		{
@@ -72,11 +76,15 @@ class AccessClassed<That> extends Access<That>
 	// @todo add tests for this
 	public function add(name : String)
 	{
+#if haxe3
+		selection.eachNode(_add.bind(name));
+#else
 		selection.eachNode(callback(_add, name));
+#end
 		return _that();
 	}
 
-	function _add(name : String, node : HtmlDom, i : Int)
+	function _add(name : String, node : Element, i : Int)
 	{
 		var list = untyped node.classList;
 		if (null != list)

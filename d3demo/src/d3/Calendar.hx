@@ -72,7 +72,7 @@ class Calendar extends Example
 		{
 			var csv = Csv.decode(d);
 			var color = new Quantize().domain( -.05, .05).range(Floats.range(9));
-			var data = new Hash();
+			var data = new Map ();
 			csv.each(function(d, i) {
 				if (i == 0) return;
 				var key = FormatDate.date(d[0]);

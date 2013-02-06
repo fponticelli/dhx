@@ -5,15 +5,15 @@
 
 package dhx;
 
-import js.Lib;
-import js.Dom;
+import js.Browser;
+import js.html.Element;
 import dhx.Selection;
 
 class AccessText<That> extends Access<That>
 {
 	public function get()
 	{
-		return selection.firstNode(function(node : HtmlDom) return untyped node.textContent);
+		return selection.firstNode(function(node : Element) return untyped node.textContent);
 	}
 
 	public function string(v : String)
@@ -36,7 +36,7 @@ class AccessText<That> extends Access<That>
 		return _that();
 	}
 
-	public function stringNodef(v : HtmlDom -> Int -> Null<String>)
+	public function stringNodef(v : Element -> Int -> Null<String>)
 	{
 		clear();
 		selection.eachNode(function(node, i) {
@@ -46,7 +46,7 @@ class AccessText<That> extends Access<That>
 		return _that();
 	}
 
-	public function floatNodef(v : HtmlDom -> Int -> Null<Float>)
+	public function floatNodef(v : Element -> Int -> Null<Float>)
 	{
 		clear();
 		selection.eachNode(function(node, i) {

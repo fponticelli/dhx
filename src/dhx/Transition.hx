@@ -5,15 +5,15 @@
  */
 
 package dhx;
-import js.Lib;
-import js.Dom;
+import js.Browser;
+import js.html.Element;
 import dhx.Selection;
 import dhx.Transition;
 import dhx.AccessTweenAttribute;
 import dhx.AccessTweenStyle;
 import dhx.AccessTweenText;
 
-class BaseTransition<This : BaseTransition<Dynamic>>
+class BaseTransition<This>
 {
 	static var CUBIC_EQUATION = function(t) return Math.pow(t, 3);
 	static var DEFAULT_EASE   = function(t) return .5 * (t < .5 ? CUBIC_EQUATION(2 * t) : (2 - CUBIC_EQUATION(2 - 2 * t)));
@@ -22,8 +22,8 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 	static var _inheritid = 0;
 
 	var _transitionId : Int;
-	var _tweens : Hash<HtmlDom -> Int -> (Float -> Void)>;
-	var _interpolators : Array<Hash<Float -> Void>>;
+	var _tweens : Map<String, Element -> Int -> (Float -> Void)>;
+	var _interpolators : Array<Map<String, Float -> Void>>;
 	var _remove : Bool;
 	var _stage : Array<Int>;
 	var _delay : Array<Float>;
@@ -32,8 +32,8 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 	var _ease : Float -> Float;
 	var _step : Float -> Bool; // fix for $closure issue
 
-	var _start : HtmlDom -> Int -> Void;
-	var _end : HtmlDom -> Int -> Void;
+	var _start : Element -> Int -> Void;
+	var _end : Element -> Int -> Void;
 
 	var selection : BaseSelection<Dynamic>;
 
@@ -41,7 +41,7 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 	{
 		this.selection = selection;
 		var tid = _transitionId = _inheritid > 0 ? _inheritid : ++_id;
-		_tweens = new Hash();
+		_tweens = new Map ();
 		_interpolators = [];
 		_remove = false;
 		_stage = [];
@@ -62,7 +62,7 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 		var clear = true,
 			k = -1,
 			me = this;
-		selection.eachNode(function(n : HtmlDom, i : Int) {
+		selection.eachNode(function(n : Element, i : Int) {
 			if (2 == me._stage[++k])
 				return;
 			var t = (elapsed - me._delay[k]) / me._duration[k],
@@ -97,7 +97,7 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 				me._stage[k] = 1;
 				if (null != me._start)
 					me._start(n, i);
-				ik = me._interpolators[k] = new Hash();
+				ik = me._interpolators[k] = new Map ();
 				tx.active = me._transitionId;
 				for (tk in me._tweens.keys())
 				{
@@ -135,13 +135,13 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 		return clear;
 	}
 
-	public function startNode(f : HtmlDom -> Int -> Void) : This
+	public function startNode(f : Element -> Int -> Void) : This
 	{
 		_start = f;
 		return _this();
 	}
 
-	public function endNode(f : HtmlDom -> Int -> Void) : This
+	public function endNode(f : Element -> Int -> Void) : This
 	{
 		_end = f;
 		return _this();
@@ -158,7 +158,7 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 		return _this();
 	}
 
-	public function delay(?f : HtmlDom -> Int -> Float, ?v : Float = 0.0) : This
+	public function delay(?f : Element -> Int -> Float, ?v : Float = 0.0) : This
 	{
 		var delayMin = Math.POSITIVE_INFINITY,
 			k = -1,
@@ -180,7 +180,7 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 		return _this();
 	}
 
-	public function duration(?f : HtmlDom -> Int -> Float, ?v : Float = 0.0) : This
+	public function duration(?f : Element -> Int -> Float, ?v : Float = 0.0) : This
 	{
 		var k = -1,
 			me = this;
@@ -215,24 +215,24 @@ class BaseTransition<This : BaseTransition<Dynamic>>
 
 	public function select(selector : String) : This
 	{
-		var k, t = createTransition(selection.select(selector));
+		var k, t : BaseTransition<Dynamic> = cast createTransition(selection.select(selector));
 		untyped t._ease = this._ease;
 		var delay = this._delay;
 		var duration = this._duration;
 		k = -1; t.delay(function(d, i) return delay[++k]);
 		k = -1; t.delay(function(d, i) return duration[++k]);
-		return t;
+		return cast t;
 	}
 
 	public function selectAll(selector : String) : This
 	{
-		var k, t = createTransition(selection.selectAll(selector));
+		var k, t : BaseTransition<Dynamic> = cast createTransition(selection.selectAll(selector));
 		untyped t._ease = this._ease;
 		var delay = this._delay;
 		var duration = this._duration;
 		k = -1; t.delay(function(d, i) return delay[i > 0 ? k : ++k]);
 		k = -1; t.delay(function(d, i) return duration[i > 0 ? k : ++k]);
-		return t;
+		return cast t;
 	}
 
 	function createTransition(selection : BaseSelection<Dynamic>) : This

@@ -5,7 +5,7 @@
 
 package dhx;
 
-import js.Lib;
+import js.Browser;
 import js.Dom;
 import utest.Assert;
 import utest.Runner;

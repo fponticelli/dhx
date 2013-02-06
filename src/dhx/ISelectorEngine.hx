@@ -1,9 +1,10 @@
 package dhx;
 
-import js.Dom;
+import js.html.Element;
+import js.html.Document;
 
 interface ISelectorEngine
 {
-	public function select(selector : String, node : HtmlDom) : Null<HtmlDom>;
-	public function selectAll(selector : String, node : HtmlDom) : Array<HtmlDom>;
+	public function select(selector : String, ?node : Element, ?doc : Document) : Null<Element>;
+	public function selectAll(selector : String, ?node : Element, ?doc : Document) : Array<Element>;
 }

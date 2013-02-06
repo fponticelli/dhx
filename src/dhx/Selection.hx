@@ -6,8 +6,6 @@
 package dhx;
 
 import dhx.Dom;
-import js.Dom;
-import js.Lib;
 import dhx.Namespace;
 import dhx.AccessAttribute;
 import dhx.AccessClassed;
@@ -16,11 +14,13 @@ import dhx.AccessProperty;
 import dhx.AccessStyle;
 import dhx.AccessText;
 import dhx.Transition;
+import js.html.Element;
+import js.html.Event;
 
 class Selection extends UnboundSelection<Selection>
 {
-	public static var current(getCurrent, null) : Selection;
-	public static var currentNode(getCurrentNode, null) : HtmlDom;
+	public static var current(get, null) : Selection;
+	public static var currentNode(get, null) : Element;
 
 	public static function create(groups : Array<Group>) return new Selection(groups)
 	private function new(groups : Array<Group>) super(groups)
@@ -29,8 +29,8 @@ class Selection extends UnboundSelection<Selection>
 		return new Selection(groups);
 	}
 
-	inline static function getCurrent() return Dom.selectNode(Group.current)
-	inline static function getCurrentNode() return Group.current
+	inline static function get_current() return Dom.selectNode(Group.current)
+	inline static function get_currentNode() return Group.current
 /*
 #if (js && js_shims)
 	static function __init__()
@@ -250,16 +250,16 @@ class PreEnterSelection<T>
 	public function append(name : String)
 	{
 		var qname = Namespace.qualify(name);
-		function append(node : HtmlDom)
+		function append(node : Element)
 		{
-			var n : HtmlDom = Lib.document.createElement(name);
+			var n : Element = js.Browser.document.createElement(name);
 			node.appendChild(n);
 			return n;
 		}
 
-		function appendNS(node : HtmlDom)
+		function appendNS(node : Element)
 		{
-			var n : HtmlDom = untyped Lib.document.createElementNS(qname.space, qname.local);
+			var n : Element = untyped js.Browser.document.createElementNS(qname.space, qname.local);
 			node.appendChild(n);
 			return n;
 		}
@@ -267,18 +267,18 @@ class PreEnterSelection<T>
 
 	}
 
-	public function insert(name : String, ?before : HtmlDom, ?beforeSelector : String)
+	public function insert(name : String, ?before : Element, ?beforeSelector : String)
 	{
 		var qname = Namespace.qualify(name);
-		function insertDom(node : HtmlDom) {
-			var n : HtmlDom = Lib.document.createElement(name),
+		function insertDom(node : Element) {
+			var n : Element = js.Browser.document.createElement(name),
 				bf = null != before ? before : Dom.selectNode(node).select(beforeSelector).node();
 			node.insertBefore(n, bf);
 			return n;
 		}
 
-		function insertNsDom(node : HtmlDom) {
-			var n : HtmlDom = untyped js.Lib.document.createElementNS(qname.space, qname.local),
+		function insertNsDom(node : Element) {
+			var n : Element = untyped js.js.Browser.document.createElementNS(qname.space, qname.local),
 				bf = null != before ? before : Dom.selectNode(node).select(beforeSelector).node();
 			node.insertBefore(n, bf);
 			return n;
@@ -292,7 +292,7 @@ class PreEnterSelection<T>
 		return new EnterSelection(groups, _choice);
 	}
 
-	function _select(selectf : HtmlDom -> HtmlDom)
+	function _select(selectf : Element -> Element)
 	{
 		var subgroups = [],
 			subgroup,
@@ -375,7 +375,7 @@ class UpdateSelection<T> extends BoundSelection<T, UpdateSelection<T>>
 
 class BaseSelection<This>
 {
-	public var parentNode : HtmlDom;
+	public var parentNode : Element;
 
 	var groups : Array<Group>;
 
@@ -405,16 +405,16 @@ class BaseSelection<This>
 	public function append(name : String) : This
 	{
 		var qname = Namespace.qualify(name);
-		function append(node : HtmlDom)
+		function append(node : Element)
 		{
-			var n : HtmlDom = Lib.document.createElement(name);
+			var n : Element = js.Browser.document.createElement(name);
 			node.appendChild(n);
 			return n;
 		}
 
-		function appendNS(node : HtmlDom)
+		function appendNS(node : Element)
 		{
-			var n : HtmlDom = untyped Lib.document.createElementNS(qname.space, qname.local);
+			var n : Element = untyped js.Browser.document.createElementNS(qname.space, qname.local);
 			node.appendChild(n);
 			return n;
 		}
@@ -424,31 +424,31 @@ class BaseSelection<This>
 
 	public function remove() : This
 	{
-		return eachNode(function(node : HtmlDom, i : Int)  {
+		return eachNode(function(node : Element, i : Int)  {
 			var parent = node.parentNode;
 			if(null != parent)
 				parent.removeChild(node);
 		});
 	}
 
-	public function eachNode(f : HtmlDom -> Int -> Void)
+	public function eachNode(f : Element -> Int -> Void)
 	{
 		for (group in groups)
 			group.each(f);
 		return _this();
 	}
 
-	public function insert(name : String, ?before : HtmlDom, ?beforeSelector : String)
+	public function insert(name : String, ?before : Element, ?beforeSelector : String)
 	{
 		var qname = Namespace.qualify(name);
 		function insertDom(node) {
-			var n : HtmlDom = Lib.document.createElement(name);
+			var n : Element = js.Browser.document.createElement(name);
 			node.insertBefore(n, null != before ? before : Dom.select(beforeSelector).node());
 			return n;
 		}
 
 		function insertNsDom(node) {
-			var n : HtmlDom = untyped js.Lib.document.createElementNS(qname.space, qname.local);
+			var n : Element = untyped js.js.Browser.document.createElementNS(qname.space, qname.local);
 			node.insertBefore(n, null != before ? before : Dom.select(beforeSelector).node());
 			return n;
 		}
@@ -456,7 +456,7 @@ class BaseSelection<This>
 		return _select(null == qname ? insertDom : insertNsDom);
 	}
 
-	public function sortNode(comparator : HtmlDom -> HtmlDom -> Int)
+	public function sortNode(comparator : Element -> Element -> Int)
 	{
 		var m = groups.length;
 		for (i in 0...m)
@@ -480,7 +480,7 @@ class BaseSelection<This>
 	}
 
 	// NODE QUERY
-	public function firstNode<T>(f : HtmlDom -> T) : Null<T>
+	public function firstNode<T>(f : Element -> T) : Null<T>
 	{
 		for (group in groups)
 			for (node in group)
@@ -489,7 +489,7 @@ class BaseSelection<This>
 		return null;
 	}
 
-	public function node() : HtmlDom
+	public function node() : Element
 	{
 		return firstNode(function(n) return n);
 	}
@@ -499,7 +499,7 @@ class BaseSelection<This>
 		return null == firstNode(function(n) return n);
 	}
 
-	public function filterNode(f : HtmlDom -> Int -> Bool)
+	public function filterNode(f : Element -> Int -> Bool)
 	{
 		var subgroups = [],
 			subgroup;
@@ -521,7 +521,7 @@ class BaseSelection<This>
 		return createSelection(subgroups);
 	}
 
-	public function mapNode<T>(f : HtmlDom -> Int -> T)
+	public function mapNode<T>(f : Element -> Int -> T)
 	{
 		var results = [];
 		for (group in groups)
@@ -542,19 +542,19 @@ class BaseSelection<This>
 	static function listenerEnterLeave(f, dom, i)
 	{
 		var e = Dom.event,
-			target : HtmlDom = untyped e.relatedTarget;
+			target : Element = untyped e.relatedTarget;
 		if(null == target || isChild(dom, target))
 			return;
 		f(dom, i);
 	}
 
-	static function isChild(parent : HtmlDom, child : HtmlDom)
+	static function isChild(parent : Element, child : Element)
 	{
 		if (child == parent)
 			return false;
 		while (child != null)
 		{
-			child = child.parentNode;
+			child = cast child.parentNode;
 			if (child == parent)
 				return true;
 		}
@@ -562,14 +562,18 @@ class BaseSelection<This>
 	}
 
 	// NODE EVENT
-	public function onNode(type : String, ?listener : HtmlDom -> Int -> Void, capture = false)
+	public function onNode(type : String, ?listener : Element -> Int -> Void, capture = false)
 	{
 		var i = type.indexOf("."),
 			typo = i < 0 ? type : type.substr(0, i);
 
 		if ((typo == "mouseenter" || typo == "mouseleave") && !ClientHost.isIE())
 		{
+#if haxe3
+			listener = listenerEnterLeave.bind(listener);
+#else
 			listener = callback(listenerEnterLeave, listener);
+#end
 			if (typo == "mouseenter")
 			{
 				typo = "mouseover";
@@ -603,7 +607,7 @@ class BaseSelection<This>
 		});
 	}
 #if (js && js_shims)
-	public static dynamic function addEvent(target : HtmlDom, typo : String, handler : Event -> Void, capture : Bool)
+	public static dynamic function addEvent(target : Element, typo : String, handler : Event -> Void, capture : Bool)
 	{
 		untyped if (target.addEventListener != null)
 		{
@@ -618,7 +622,7 @@ class BaseSelection<This>
 		addEvent(target, typo, handler, capture);
 	}
 
-	public static dynamic function removeEvent(target : HtmlDom, typo : String, type : String, capture : Bool)
+	public static dynamic function removeEvent(target : Element, typo : String, type : String, capture : Bool)
 	{
 		untyped if (target.removeEventListener != null)
 		{
@@ -633,12 +637,12 @@ class BaseSelection<This>
 		removeEvent(target, typo, type, capture);
 	}
 #else
-	inline public static function addEvent(node : HtmlDom, typo : String, handler : Event -> Void, capture : Bool)
+	inline public static function addEvent(node : Element, typo : String, handler : Event -> Void, capture : Bool)
 	{
 		untyped node.addEventListener(typo, handler, capture);
 	}
 
-	inline public static function removeEvent(node : HtmlDom, typo : String, type : String, capture : Bool)
+	inline public static function removeEvent(node : Element, typo : String, type : String, capture : Bool)
 	{
 		untyped node.removeEventListener(typo, dhx.Access.getEvent(node, type), capture);
 	}
@@ -650,7 +654,7 @@ class BaseSelection<This>
 		return throw "abstract method";
 	}
 
-	function _select(selectf : HtmlDom -> HtmlDom) : This
+	function _select(selectf : Element -> Element) : This
 	{
 		var subgroups = [],
 			subgroup,
@@ -676,7 +680,7 @@ class BaseSelection<This>
 		return createSelection(subgroups);
 	}
 
-	function _selectAll(selectallf : HtmlDom -> Array<HtmlDom>) : This
+	function _selectAll(selectallf : Element -> Array<Element>) : This
 	{
 		var subgroups = [],
 			subgroup;
@@ -698,13 +702,13 @@ class BaseSelection<This>
 	{
 		var n = group.count(),
 			m = groupData.length,
-			updateHtmlDoms = [],
-			exitHtmlDoms = [],
-			enterHtmlDoms = [],
+			updateElements = [],
+			exitElements = [],
+			enterElements = [],
 			node,
 			nodeData
 		;
-		var nodeByKey = new Hash(),
+		var nodeByKey = new Map (),
 			keys = [],
 			key,
 			j = groupData.length;
@@ -713,10 +717,9 @@ class BaseSelection<This>
 		{
 			node = group.get(i);
 			key = join(Access.getData(node), i);
-//			trace(key + " " + nodeByKey.exists(key));
 			if (nodeByKey.exists(key))
 			{
-				exitHtmlDoms[j++] = node;
+				exitElements[j++] = node;
 			} else {
 				nodeByKey.set(key, node);
 			}
@@ -729,12 +732,12 @@ class BaseSelection<This>
 			if (null != node)
 			{
 				Access.setData(node, nodeData);
-				updateHtmlDoms[i] = node;
-				enterHtmlDoms[i] = exitHtmlDoms[i] = null;
+				updateElements[i] = node;
+				enterElements[i] = exitElements[i] = null;
 			} else {
-				node = Access.emptyHtmlDom(nodeData);
-				enterHtmlDoms[i] = node;
-				updateHtmlDoms[i] = exitHtmlDoms[i] = null;
+				node = Access.emptyElement(nodeData);
+				enterElements[i] = node;
+				updateElements[i] = exitElements[i] = null;
 			}
 			nodeByKey.remove(key);
 		}
@@ -742,16 +745,16 @@ class BaseSelection<This>
 		for (i in 0...n)
 		{
 			if (nodeByKey.exists(keys[i]))
-				exitHtmlDoms[i] = group.get(i);
+				exitElements[i] = group.get(i);
 		}
 
-		var enterGroup = new Group(enterHtmlDoms);
+		var enterGroup = new Group(enterElements);
 		enterGroup.parentNode = group.parentNode;
 		enter.push(enterGroup);
-		var updateGroup = new Group(updateHtmlDoms);
+		var updateGroup = new Group(updateElements);
 		updateGroup.parentNode = group.parentNode;
 		update.push(updateGroup);
-		var exitGroup = new Group(exitHtmlDoms);
+		var exitGroup = new Group(exitElements);
 		exitGroup.parentNode = group.parentNode;
 		exit.push(exitGroup);
 	}
@@ -760,9 +763,9 @@ class BaseSelection<This>
 	{
 		var n0 = group.count(),
 			n1 = group.count(),
-			updateHtmlDoms = [],
-			exitHtmlDoms = [],
-			enterHtmlDoms = [],
+			updateElements = [],
+			exitElements = [],
+			enterElements = [],
 			node,
 			nodeData
 		;
@@ -777,32 +780,32 @@ class BaseSelection<This>
 			if (null != node)
 			{
 				Access.setData(node, nodeData);
-				updateHtmlDoms[i] = node;
-				enterHtmlDoms[i] = exitHtmlDoms[i] = null;
+				updateElements[i] = node;
+				enterElements[i] = exitElements[i] = null;
 			} else {
-				enterHtmlDoms[i] = Access.emptyHtmlDom(nodeData);
-				updateHtmlDoms[i] = exitHtmlDoms[i] = null;
+				enterElements[i] = Access.emptyElement(nodeData);
+				updateElements[i] = exitElements[i] = null;
 			}
 		}
 		for (i in n0...groupData.length)
 		{
-			node = Access.emptyHtmlDom(groupData[i]);
-			enterHtmlDoms[i] = node;
-			updateHtmlDoms[i] = exitHtmlDoms[i] = null;
+			node = Access.emptyElement(groupData[i]);
+			enterElements[i] = node;
+			updateElements[i] = exitElements[i] = null;
 		}
 		for (i in groupData.length...n1)
 		{
-			exitHtmlDoms[i] = group.get(i);
-			enterHtmlDoms[i] = updateHtmlDoms[i] = null;
+			exitElements[i] = group.get(i);
+			enterElements[i] = updateElements[i] = null;
 		}
 
-		var enterGroup = new Group(enterHtmlDoms);
+		var enterGroup = new Group(enterElements);
 		enterGroup.parentNode = group.parentNode;
 		enter.push(enterGroup);
-		var updateGroup = new Group(updateHtmlDoms);
+		var updateGroup = new Group(updateElements);
 		updateGroup.parentNode = group.parentNode;
 		update.push(updateGroup);
-		var exitGroup = new Group(exitHtmlDoms);
+		var exitGroup = new Group(exitElements);
 		exitGroup.parentNode = group.parentNode;
 		exit.push(exitGroup);
 	}
