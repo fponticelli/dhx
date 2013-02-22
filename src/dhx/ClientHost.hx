@@ -89,8 +89,8 @@ class ClientHost
 		return Type.enumConstructor(environment);
 	}
 
-	static function userAgent() return "" + untyped __js__("navigator.userAgent")
-	static function hasNavigator() : Bool return untyped __js__("typeof navigator !== 'undefined'")
+	static function userAgent() return "" + untyped __js__("navigator.userAgent");
+	static function hasNavigator() : Bool return untyped __js__("typeof navigator !== 'undefined'");
 
 	static function __init__()
 	{

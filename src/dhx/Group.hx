@@ -18,7 +18,7 @@ class Group
 
 	var nodes : Array<Element>;
 
-	public function new(nodes : Array<Element>) this.nodes = nodes
+	public function new(nodes : Array<Element>) this.nodes = nodes;
 
 	public function each(f : Element -> Int -> Void)
 	{
@@ -27,13 +27,13 @@ class Group
 				f(current = nodes[i], i);
 	}
 
-	inline public function iterator() return nodes.iterator()
+	inline public function iterator() return nodes.iterator();
 
-	inline public function get(i : Int) return nodes[i]
+	inline public function get(i : Int) return nodes[i];
 
-	inline public function count() return nodes.length
+	inline public function count() return nodes.length;
 
-	inline public function push(node : Element) nodes.push(node)
+	inline public function push(node : Element) nodes.push(node);
 
 	inline public static function merge(source:Array<Group>, target:Array<Group>){
 		if (target.length != source.length) throw ("Group length not equal");
@@ -51,5 +51,5 @@ class Group
 		return target;
 	}
 
-	inline public function sort(comparator : Element -> Element -> Int) nodes.sort(comparator)
+	inline public function sort(comparator : Element -> Element -> Int) nodes.sort(comparator);
 }

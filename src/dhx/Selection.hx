@@ -22,15 +22,15 @@ class Selection extends UnboundSelection<Selection>
 	public static var current(get, null) : Selection;
 	public static var currentNode(get, null) : Element;
 
-	public static function create(groups : Array<Group>) return new Selection(groups)
-	private function new(groups : Array<Group>) super(groups)
+	public static function create(groups : Array<Group>) return new Selection(groups);
+	private function new(groups : Array<Group>) super(groups);
 	override function createSelection(groups : Array<Group>) : Selection
 	{
 		return new Selection(groups);
 	}
 
-	inline static function get_current() return Dom.selectNode(Group.current)
-	inline static function get_currentNode() return Group.current
+	inline static function get_current() return Dom.selectNode(Group.current);
+	inline static function get_currentNode() return Group.current;
 /*
 #if (js && js_shims)
 	static function __init__()
@@ -51,12 +51,12 @@ if (!('getAttributeNS' in N.prototype))
 
 class UnboundSelection<This> extends BaseSelection<This>
 {
-	public function html() return new AccessHtml(this)
-	public function text() return new AccessText(this)
-	public function attr(name : String) return new AccessAttribute(name, this)
-	public function classed() return new AccessClassed(this)
-	public function property(name : String) return new AccessProperty(name, this)
-	public function style(name : String) return new AccessStyle(name, this)
+	public function html() return new AccessHtml(this);
+	public function text() return new AccessText(this);
+	public function attr(name : String) return new AccessAttribute(name, this);
+	public function classed() return new AccessClassed(this);
+	public function property(name : String) return new AccessProperty(name, this);
+	public function style(name : String) return new AccessStyle(name, this);
 
 	// TRANSITION
 
@@ -126,7 +126,7 @@ class DataChoice<T> extends UpdateSelection<T>
 
 class ResumeSelection<T> extends BoundSelection<T, ResumeSelection<T>>
 {
-	public static function create<T>(groups : Array<Group>) return new ResumeSelection<T>(groups)
+	public static function create<T>(groups : Array<Group>) return new ResumeSelection<T>(groups);
 	override function createSelection(groups : Array<Group>)
 	{
 		return new ResumeSelection<T>(groups);
@@ -135,12 +135,12 @@ class ResumeSelection<T> extends BoundSelection<T, ResumeSelection<T>>
 
 class BoundSelection<T, This> extends BaseSelection<This>
 {
-	public function html() return new AccessDataHtml(this)
-	public function text() return new AccessDataText(this)
-	public function attr(name : String) return new AccessDataAttribute(name, this)
-	public function classed() return new AccessDataClassed(this)
-	public function property(name : String) return new AccessDataProperty(name, this)
-	public function style(name : String) return new AccessDataStyle(name, this)
+	public function html() return new AccessDataHtml(this);
+	public function text() return new AccessDataText(this);
+	public function attr(name : String) return new AccessDataAttribute(name, this);
+	public function classed() return new AccessDataClassed(this);
+	public function property(name : String) return new AccessDataProperty(name, this);
+	public function style(name : String) return new AccessDataStyle(name, this);
 
 	// TRANSITION
 	public function transition()
@@ -332,8 +332,8 @@ class EnterSelection<T> extends BoundSelection<T, EnterSelection<T>>
 	{
 		return new EnterSelection(groups, _choice);
 	}
-	public function exit() return _choice.exit()
-	public function update() return _choice.update()
+	public function exit() return _choice.exit();
+	public function update() return _choice.update();
 }
 
 class ExitSelection<T> extends UnboundSelection<ExitSelection<T>>
@@ -350,8 +350,8 @@ class ExitSelection<T> extends UnboundSelection<ExitSelection<T>>
 		return new ExitSelection(groups, _choice);
 	}
 
-	public function enter() return _choice.enter()
-	public function update() return _choice.update()
+	public function enter() return _choice.enter();
+	public function update() return _choice.update();
 }
 
 class UpdateSelection<T> extends BoundSelection<T, UpdateSelection<T>>
@@ -368,9 +368,9 @@ class UpdateSelection<T> extends BoundSelection<T, UpdateSelection<T>>
 		return new UpdateSelection(groups, _choice);
 	}
 
-	public function update() return this
-	public function enter() return _choice.enter()
-	public function exit() return _choice.exit()
+	public function update() return this;
+	public function enter() return _choice.enter();
+	public function exit() return _choice.exit();
 }
 
 class BaseSelection<This>
@@ -399,7 +399,7 @@ class BaseSelection<This>
 		});
 	}
 
-	inline function _this() : This return cast this
+	inline function _this() : This return cast this;
 
 	// DOM MANIPULATION
 	public function append(name : String) : This

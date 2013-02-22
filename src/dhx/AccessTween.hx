@@ -62,5 +62,5 @@ class AccessTween<That : BaseTransition<Dynamic>>
 		return function(d : Element, i : Int, a : Float) return Floats.interpolatef(a, f(d,i));
 	}
 
-	inline function _that() : That return cast transition
+	inline function _that() : That return cast transition;
 }

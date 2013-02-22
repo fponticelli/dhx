@@ -240,44 +240,34 @@ class BaseTransition<This>
 		return throw "abstract method";
 	}
 
-	function _this() : This return cast this
+	function _this() : This return cast this;
 }
 
 class UnboundTransition extends BaseTransition<UnboundTransition>
 {
-	public function text() : AccessTweenText<UnboundTransition> return new AccessTweenText(this, _tweens)
-	public function style(name : String) : AccessTweenStyle<UnboundTransition> return new AccessTweenStyle(name, this, _tweens)
-	public function attr(name : String) : AccessTweenAttribute<UnboundTransition> return new AccessTweenAttribute(name, this, _tweens)
+	public function text() : AccessTweenText<UnboundTransition> return new AccessTweenText(this, _tweens);
+	public function style(name : String) : AccessTweenStyle<UnboundTransition> return new AccessTweenStyle(name, this, _tweens);
+	public function attr(name : String) : AccessTweenAttribute<UnboundTransition> return new AccessTweenAttribute(name, this, _tweens);
 
 	override function createTransition(selection : BaseSelection<Dynamic>)
-	{
 		return new UnboundTransition(selection);
-	}
 }
 
 class BoundTransition<T> extends BaseTransition<BoundTransition<T>>
 {
 	public function new(selection : BoundSelection<T, Dynamic>)
-	{
 		super(selection);
-	}
 
-	public function text() : AccessDataTweenText<T, BoundTransition<T>> return new AccessDataTweenText(this, _tweens)
-	public function style(name : String) : AccessDataTweenStyle<T, BoundTransition<T>> return new AccessDataTweenStyle(name, this, _tweens)
-	public function attr(name : String) : AccessDataTweenAttribute<T, BoundTransition<T>> return new AccessDataTweenAttribute(name, this, _tweens)
+	public function text() : AccessDataTweenText<T, BoundTransition<T>> return new AccessDataTweenText(this, _tweens);
+	public function style(name : String) : AccessDataTweenStyle<T, BoundTransition<T>> return new AccessDataTweenStyle(name, this, _tweens);
+	public function attr(name : String) : AccessDataTweenAttribute<T, BoundTransition<T>> return new AccessDataTweenAttribute(name, this, _tweens);
 
 	public function start(f : T -> Int -> Void)
-	{
 		return startNode(function(n,i) f(Access.getData(n), i));
-	}
 
 	public function end(f : T -> Int -> Void)
-	{
 		return endNode(function(n,i) f(Access.getData(n), i));
-	}
 
 	override function createTransition(selection : BaseSelection<Dynamic>)
-	{
 		return new BoundTransition(cast selection);
-	}
 }
